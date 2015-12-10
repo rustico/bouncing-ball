@@ -1,0 +1,9 @@
+{
+  "name": "bouncingball",
+  "version": "0.0.1",
+  "description": "Bouncing Ball",
+  "dependencies": {
+    "minifier": "^0.7.1",
+    "open": "0.0.5"
+  }
+}
