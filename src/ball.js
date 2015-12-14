@@ -12,64 +12,72 @@ function BouncingBall(canvas, options) {
     this.vx = options.vx || 1;
     this.color = options.color || getRandomColor();
     this.left = options.left || false;
+
+    this.canvasBg = options.canvasBg || canvas
+    this.contextBg = this.canvasBg.getContext('2d');
 }
 
 BouncingBall.prototype.calculateCoordinates = function(g) {
-    var that = this;
-    if(that.vx <= 0) {
-        return false;
+    var self = this;
+    if(self.vx <= 0) {
+        return null;
     }
+    var fromCoordinates = {x: self.x, y: self.y}
+    self.coordinates.push(fromCoordinates);
     
-    that.coordinates.push({x: that.x, y: that.y});
-    
-    that.vy += g;    
+    self.vy += g;    
 
-    if(that.left) {
-        that.x -= that.vx;
+    if(self.left) {
+        self.x -= self.vx;
     } else {
-        that.x += that.vx;
+        self.x += self.vx;
     }
-    that.y += that.vy;
+    self.y += self.vy;
     
-    if (that.y > that.canvas.height - that.radius){
-        that.y = that.canvas.height - that.radius;
-        that.vy *= -0.7; 
-        that.vx -= 0.01;
+    if (self.y > self.canvas.height - self.radius){
+        self.y = self.canvas.height - self.radius;
+        self.vy *= -0.7; 
+        self.vx -= 0.01;
     }
-    if (that.x > that.canvas.width + that.radius && !that.left){ 
-        that.x = -that.radius; 
-    }
-
-    if (that.x < 0 && that.left){ 
-        that.x = that.canvas.width; 
+    if (self.x > self.canvas.width + self.radius && !self.left){ 
+        self.x = -self.radius; 
     }
 
-    return true;
+    if (self.x < 0 && self.left){ 
+        self.x = self.canvas.width; 
+    }
+
+    var toCoordinates = {x: self.x, y:self.y}
+    return [fromCoordinates, toCoordinates];
 };
 
-BouncingBall.prototype.draw = function(displayTrajectory) {
-    var that = this;
-    that.context.strokeStyle = that.color;
-    if(displayTrajectory) {
-        that.context.beginPath();
-        var lastX = that.coordinates[0];
-        that.coordinates.forEach(function(coordinate) {
-            if (lastX > coordinate.x && !that.left) {
-                that.context.moveTo(0, coordinate.y);
-            } else if(lastX < coordinate.x && that.left) {
-                that.context.moveTo(that.canvas.width, coordinate.y);
-            }
+BouncingBall.prototype.draw = function() {
+    var self = this;
+    self.context.strokeStyle = self.color;
+    self.context.fillStyle = self.color;    
+    self.context.beginPath();
+    self.context.arc(self.x, self.y, self.radius, 0, 2*Math.PI, true);
+    self.context.closePath();
+    self.context.fill();
+};
 
-            that.context.lineTo(coordinate.x, coordinate.y)
-            lastX = coordinate.x;
-        });
-        
-        that.context.stroke();
+BouncingBall.prototype.drawTrajectory = function(coordinates) {
+    var self = this,
+        fromX = coordinates[0].x,
+        fromY = coordinates[0].y,
+        toX = coordinates[1].x,
+        toY = coordinates[1].y
+
+    if (fromX < toX && self.left) {
+        toX = 0;
+    } else if(toX < fromX && !self.left) {
+        toX = canvas.width;
     }
-    
-    that.context.fillStyle = that.color;    
-    that.context.beginPath();
-    that.context.arc(that.x, that.y, that.radius, 0, 2*Math.PI, true);
-    that.context.closePath();
-    that.context.fill();
+
+    self.contextBg.strokeStyle = self.color;
+    self.contextBg.beginPath();
+    self.contextBg.moveTo(fromX, fromY);
+    self.contextBg.lineTo(toX, toY);
+    self.contextBg.stroke();
+    self.contextBg.closePath();
 };

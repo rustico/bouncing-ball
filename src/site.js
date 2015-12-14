@@ -1,7 +1,7 @@
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
-var canvas_bg = document.getElementById('canvas_bg');
-var context_bg = canvas_bg.getContext('2d'); 
+var canvasBg = document.getElementById('canvas_bg');
+var contextBg = canvasBg.getContext('2d'); 
 var g = 0.1;
 var balls = [];
 var lastBallID = 0;
@@ -35,7 +35,8 @@ function addEvents() {
             x: x,
             y: y,
             vx: vx,
-            vy: vy
+            vy: vy,
+            canvasBg: canvasBg
         };
 
         if(event.button !== 0) {
@@ -53,28 +54,21 @@ function addEvents() {
 
     var resetCanvasButton = document.getElementById('resetCanvas');
     resetCanvasButton.addEventListener('click', resetCanvas);
+
+    document.getElementById('displayTrajectory').addEventListener('change', toggleTrajectory);
 }
  
 function loop() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     var displayTrajectory = document.getElementById('displayTrajectory').checked;
     var isBouncing;
-    var removeBalls = [];
     balls.forEach(function(ball) {
-        isBouncing = ball.element.calculateCoordinates(g);
-        if(!isBouncing) {
-            ball.element.canvas = canvas_bg;
-            ball.element.context = context_bg;
-            removeBalls.push(ball);
+        coordinates = ball.element.calculateCoordinates(g);
+        if(coordinates !== null) {
+            ball.element.drawTrajectory(coordinates);
         }
-
-        ball.element.draw(displayTrajectory);
-    })
-
-    var ballIndex;
-    removeBalls.forEach(function(ball){
-        ballIndex = balls.indexOf(ball);
-        balls.splice(ballIndex, 1);
+        
+        ball.element.draw();
     })
     
     window.requestAnimationFrame(loop);
@@ -83,5 +77,15 @@ function loop() {
 function resetCanvas() {
     balls = [];
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context_bg.clearRect(0, 0, canvas.width, canvas.height);
+    contextBg.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function toggleTrajectory() {
+    var canvasContainer = document.getElementById('canvas-container');
+    var showTrajectory = canvasContainer.className === 'showTrajectory';
+    if(showTrajectory) {
+        canvasContainer.className = 'hideTrajectory';
+    } else {
+        canvasContainer.className = 'showTrajectory';
+    }
 }

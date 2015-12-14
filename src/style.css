@@ -2,7 +2,7 @@ body {
   background-color: #F7F5F5;
 }
 
-.canvas-container {
+#canvas-container {
   margin-top: 50px;
   position: relative;
   padding-top: 510px;
@@ -20,9 +20,16 @@ body {
   cursor: crosshair;
 }
 
+.showTrajectory #canvas {
+  background-color: transparent;
+}
+
+.hideTrajectory #canvasBg {
+  display: none;
+}
+
 #canvas {
   z-index: 100;
-  background-color: transparent;
 }
 
 form div {
