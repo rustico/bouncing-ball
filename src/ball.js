@@ -17,7 +17,7 @@ function BouncingBall(canvas, options) {
 BouncingBall.prototype.calculateCoordinates = function(g) {
     var that = this;
     if(that.vx <= 0) {
-        return;
+        return false;
     }
     
     that.coordinates.push({x: that.x, y: that.y});
@@ -43,6 +43,8 @@ BouncingBall.prototype.calculateCoordinates = function(g) {
     if (that.x < 0 && that.left){ 
         that.x = that.canvas.width; 
     }
+
+    return true;
 };
 
 BouncingBall.prototype.draw = function(displayTrajectory) {

@@ -3,18 +3,26 @@ body {
 }
 
 .canvas-container {
-  width: 100%;
-  text-align: center;
   margin-top: 50px;
+  position: relative;
+  padding-top: 510px;
+  margin-left: 25%;
+}
+
+.canvas {
+  background-color: #fff;
+  border-radius: 5px;
+  position: absolute;
+  top: 0px;
+}
+
+.canvas:hover {
+  cursor: crosshair;
 }
 
 #canvas {
-  background-color: #fff;
-  border-radius: 5px;
-}
-
-#canvas:hover {
-  cursor: crosshair;
+  z-index: 100;
+  background-color: transparent;
 }
 
 form div {
