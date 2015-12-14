@@ -17,36 +17,50 @@ function BouncingBall(canvas, options) {
     this.contextBg = this.canvasBg.getContext('2d');
 }
 
-BouncingBall.prototype.calculateCoordinates = function(g) {
+BouncingBall.prototype.calculateCoordinates = function(g, walls) {
     var self = this;
     if(self.vx <= 0) {
         return null;
     }
+    
     var fromCoordinates = {x: self.x, y: self.y}
     self.coordinates.push(fromCoordinates);
     
     self.vy += g;    
-
-    if(self.left) {
-        self.x -= self.vx;
-    } else {
-        self.x += self.vx;
-    }
-    self.y += self.vy;
-    
     if (self.y > self.canvas.height - self.radius){
         self.y = self.canvas.height - self.radius;
         self.vy *= -0.7; 
         self.vx -= 0.01;
-    }
-    if (self.x > self.canvas.width + self.radius && !self.left){ 
-        self.x = -self.radius; 
-    }
-
-    if (self.x < 0 && self.left){ 
-        self.x = self.canvas.width; 
+    } else if(self.y <= 0 && walls) {
+        self.y = self.radius;
+        self.vy *= -0.8; 
+    } else {
+        self.y += self.vy;
     }
 
+    if(self.left) {
+        if (self.x < 0 && self.left){ 
+            self.x = self.canvas.width;
+            if(!!walls) {
+                self.x = self.radius;
+                self.left = false;
+            }
+        } else {
+            self.x -= self.vx;
+        }
+    } else {
+        if (self.x > self.canvas.width){ 
+            self.x = 0;
+            if(!!walls) {
+                self.left = true;
+                self.x = self.canvas.width - self.radius;
+            }
+        } else {
+            self.x += self.vx;
+        }
+        
+    }
+    
     var toCoordinates = {x: self.x, y:self.y}
     return [fromCoordinates, toCoordinates];
 };
@@ -81,3 +95,7 @@ BouncingBall.prototype.drawTrajectory = function(coordinates) {
     self.contextBg.stroke();
     self.contextBg.closePath();
 };
+
+if(typeof exports !== 'undefined'){
+    module.exports = BouncingBall;
+}

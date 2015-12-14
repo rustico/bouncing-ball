@@ -16,3 +16,14 @@ $ node build
 ```
 
 Will create a compressed version from ./src to ./public and it will open ./public/index.html in your default browser.
+
+
+## Tests
+
+For testing you will need to install https://github.com/caolan/nodeunit and then execute:
+
+```
+$ nodeunit tests/ball.js
+```
+
+

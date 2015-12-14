@@ -56,14 +56,15 @@ function addEvents() {
     resetCanvasButton.addEventListener('click', resetCanvas);
 
     document.getElementById('displayTrajectory').addEventListener('change', toggleTrajectory);
+    document.getElementById('hasWalls').addEventListener('change', toggleWalls);
 }
  
 function loop() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    var displayTrajectory = document.getElementById('displayTrajectory').checked;
-    var isBouncing;
+    var hasWalls = document.getElementById('hasWalls').checked;
+    var coordinates;
     balls.forEach(function(ball) {
-        coordinates = ball.element.calculateCoordinates(g);
+        coordinates = ball.element.calculateCoordinates(g, hasWalls);
         if(coordinates !== null) {
             ball.element.drawTrajectory(coordinates);
         }
@@ -81,11 +82,22 @@ function resetCanvas() {
 }
 
 function toggleTrajectory() {
-    var canvasContainer = document.getElementById('canvas-container');
-    var showTrajectory = canvasContainer.className === 'showTrajectory';
-    if(showTrajectory) {
-        canvasContainer.className = 'hideTrajectory';
+    toggleClass('canvas-container', 'showTrajectory', 'hideTrajectory');
+}
+
+function toggleWalls() {
+    toggleClass('canvas', 'hideWalls', 'showWalls');
+
+}
+
+function toggleClass(elementId, classA, classB) {
+    var canvasContainer = document.getElementById(elementId);
+    var showTrajectory = canvasContainer.className.indexOf(classA);
+    if(showTrajectory >= 0) {
+        canvasContainer.className = canvasContainer.className.replace(classA, '');
+        canvasContainer.className +=  classB;
     } else {
-        canvasContainer.className = 'showTrajectory';
+        canvasContainer.className = canvasContainer.className.replace(classB, '');
+        canvasContainer.className +=  classA;
     }
 }
